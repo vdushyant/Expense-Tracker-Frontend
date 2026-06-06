@@ -222,3 +222,17 @@ body {
 .danger-btn:hover {
   background-color: #b91c1c;
 }
+
+.secondary-btn {
+  padding: 8px 12px;
+  background-color: #4b5563;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-right: 8px;
+}
+
+.secondary-btn:hover {
+  background-color: #374151;
+}

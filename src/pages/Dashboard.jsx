@@ -4,6 +4,7 @@ import {
   deleteExpense,
   getExpenses,
   getTotalSummary,
+  updateExpense,
 } from "../api/expenseApi";
 
 function Dashboard() {
@@ -11,6 +12,7 @@ function Dashboard() {
   const [summary, setSummary] = useState(0);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
+  const [editingExpenseId, setEditingExpenseId] = useState(null);
 
   const [expenseForm, setExpenseForm] = useState({
     description: "",
@@ -58,12 +60,19 @@ function Dashboard() {
     setError("");
 
     try {
-      await createExpense({
+      const expenseData = {
         ...expenseForm,
         amount: Number(expenseForm.amount),
-      });
+      };
 
-      setMessage("Expense added successfully.");
+      if (editingExpenseId) {
+        await updateExpense(editingExpenseId, expenseData);
+        setMessage("Expense updated successfully.");
+        setEditingExpenseId(null);
+      } else {
+        await createExpense(expenseData);
+        setMessage("Expense added successfully.");
+      }
 
       setExpenseForm({
         description: "",
@@ -81,32 +90,46 @@ function Dashboard() {
 
       setError(errorMessage);
     }
-
-  async function handleDeleteExpense(id) {
-  const confirmDelete = window.confirm("Are you sure you want to delete this expense?");
-
-  if (!confirmDelete) {
-    return;
   }
 
-  setMessage("");
-  setError("");
+    async function handleDeleteExpense(id) {
+      const confirmDelete = window.confirm("Are you sure you want to delete this expense?");
 
-  try {
-    await deleteExpense(id);
+      if (!confirmDelete) {
+        return;
+      }
 
-    setMessage("Expense deleted successfully.");
-    fetchDashboardData();
-  } catch (err) {
-    console.error("Delete expense error:", err);
+      setMessage("");
+      setError("");
 
-    const errorMessage =
-      err.response?.data?.message || "Failed to delete expense.";
+      try {
+        await deleteExpense(id);
 
-    setError(errorMessage);
-  }
-}
-}
+        setMessage("Expense deleted successfully.");
+        fetchDashboardData();
+      } catch (err) {
+        console.error("Delete expense error:", err);
+
+        const errorMessage =
+          err.response?.data?.message || "Failed to delete expense.";
+
+        setError(errorMessage);
+      }
+    }
+
+    function handleEditExpense(expense) {
+      setEditingExpenseId(expense.id);
+
+      setExpenseForm({
+        description: expense.description,
+        amount: expense.amount,
+        category: expense.category,
+        expenseDate: expense.expenseDate,
+      });
+
+      setMessage("");
+      setError("");
+    }
 
   return (
     <div className="dashboard-container">
@@ -168,7 +191,7 @@ function Dashboard() {
           </div>
 
           <button type="submit" className="primary-btn">
-            Add Expense
+            {editingExpenseId ? "Update Expense" : "Add Expense"}
           </button>
         </form>
       </div>
@@ -200,13 +223,22 @@ function Dashboard() {
                   <td>₹{expense.amount}</td>
                   <td>{expense.expenseDate}</td>
                   <td>
-                    <button
-                    className="danger-btn"
-                     onClick={() => handleDeleteExpense(expense.id)}
-                   >
-                     Delete
-                    </button>
-  </td>
+                    <td>
+  <button
+    className="secondary-btn"
+    onClick={() => handleEditExpense(expense)}
+  >
+    Edit
+  </button>
+
+  <button
+    className="danger-btn"
+    onClick={() => handleDeleteExpense(expense.id)}
+  >
+    Delete
+  </button>
+</td>
+                  </td>
                 </tr>
               ))}
             </tbody>
