@@ -38,3 +38,9 @@ export function getMonthlySummary(month) {
 export function getExpensesByCategory(category) {
   return api.get(`/expenses/category/${category}`);
 }
+
+export function exportExpensesCsv() {
+  return api.get("/expenses/export", {
+    responseType: "blob",
+  });
+}

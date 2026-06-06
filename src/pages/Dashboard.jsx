@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import {
   createExpense,
   deleteExpense,
+  exportExpensesCsv,
   getExpenses,
   getExpensesByCategory,
   getTotalSummary,
@@ -94,73 +95,107 @@ function Dashboard() {
     }
   }
 
-    async function handleDeleteExpense(id) {
-      const confirmDelete = window.confirm("Are you sure you want to delete this expense?");
+  async function handleDeleteExpense(id) {
+    const confirmDelete = window.confirm("Are you sure you want to delete this expense?");
 
-      if (!confirmDelete) {
-        return;
-      }
-
-      setMessage("");
-      setError("");
-
-      try {
-        await deleteExpense(id);
-
-        setMessage("Expense deleted successfully.");
-        fetchDashboardData();
-      } catch (err) {
-        console.error("Delete expense error:", err);
-
-        const errorMessage =
-          err.response?.data?.message || "Failed to delete expense.";
-
-        setError(errorMessage);
-      }
+    if (!confirmDelete) {
+      return;
     }
 
-    function handleEditExpense(expense) {
-      setEditingExpenseId(expense.id);
+    setMessage("");
+    setError("");
 
-      setExpenseForm({
-        description: expense.description,
-        amount: expense.amount,
-        category: expense.category,
-        expenseDate: expense.expenseDate,
+    try {
+      await deleteExpense(id);
+
+      setMessage("Expense deleted successfully.");
+      fetchDashboardData();
+    } catch (err) {
+      console.error("Delete expense error:", err);
+
+      const errorMessage =
+        err.response?.data?.message || "Failed to delete expense.";
+
+      setError(errorMessage);
+    }
+  }
+
+  function handleEditExpense(expense) {
+    setEditingExpenseId(expense.id);
+
+    setExpenseForm({
+      description: expense.description,
+      amount: expense.amount,
+      category: expense.category,
+      expenseDate: expense.expenseDate,
+    });
+
+    setMessage("");
+    setError("");
+  }
+
+  async function handleCategoryFilter(event) {
+    event.preventDefault();
+
+    if (!categoryFilter.trim()) {
+      fetchDashboardData();
+      return;
+    }
+
+    setMessage("");
+    setError("");
+
+    try {
+      const response = await getExpensesByCategory(categoryFilter.trim());
+      setExpenses(response.data || []);
+    } catch (err) {
+      console.error("Category filter error:", err);
+
+      const errorMessage =
+        err.response?.data?.message || "Failed to filter expenses by category.";
+
+      setError(errorMessage);
+    }
+  }
+
+  function handleClearFilter() {
+    setCategoryFilter("");
+    fetchDashboardData();
+  }
+
+  async function handleExportCsv() {
+    setMessage("");
+    setError("");
+
+    try {
+      const response = await exportExpensesCsv();
+
+      const blob = new Blob([response.data], {
+        type: "text/csv",
       });
 
-      setMessage("");
-      setError("");
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "expenses.csv";
+
+      document.body.appendChild(link);
+      link.click();
+
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      setMessage("CSV exported successfully.");
+    } catch (err) {
+      console.error("CSV export error:", err);
+
+      const errorMessage =
+        err.response?.data?.message || "Failed to export CSV.";
+
+      setError(errorMessage);
     }
-
-    async function handleCategoryFilter(event) {
-  event.preventDefault();
-
-  if (!categoryFilter.trim()) {
-    fetchDashboardData();
-    return;
   }
-
-  setMessage("");
-  setError("");
-
-  try {
-    const response = await getExpensesByCategory(categoryFilter.trim());
-    setExpenses(response.data || []);
-  } catch (err) {
-    console.error("Category filter error:", err);
-
-    const errorMessage =
-      err.response?.data?.message || "Failed to filter expenses by category.";
-
-    setError(errorMessage);
-  }
-}
-
-function handleClearFilter() {
-  setCategoryFilter("");
-  fetchDashboardData();
-}
 
   return (
     <div className="dashboard-container">
@@ -173,6 +208,10 @@ function handleClearFilter() {
         <h3>Total Expense</h3>
         <p>₹{summary}</p>
       </div>
+
+      <button className="secondary-btn" onClick={handleExportCsv}>
+        Export CSV
+      </button>
 
       <div className="form-card">
         <h3>Add Expense</h3>
@@ -228,25 +267,25 @@ function handleClearFilter() {
       </div>
 
       <div className="filter-card">
-  <h3>Filter Expenses</h3>
+        <h3>Filter Expenses</h3>
 
-  <form onSubmit={handleCategoryFilter} className="filter-form">
-    <input
-      type="text"
-      value={categoryFilter}
-      onChange={(event) => setCategoryFilter(event.target.value)}
-      placeholder="Enter category, e.g. Food"
-    />
+        <form onSubmit={handleCategoryFilter} className="filter-form">
+          <input
+            type="text"
+            value={categoryFilter}
+            onChange={(event) => setCategoryFilter(event.target.value)}
+            placeholder="Enter category, e.g. Food"
+          />
 
-    <button type="submit" className="secondary-btn">
-      Filter
-    </button>
+          <button type="submit" className="secondary-btn">
+            Filter
+          </button>
 
-    <button type="button" className="danger-btn" onClick={handleClearFilter}>
-      Clear
-    </button>
-  </form>
-</div>
+          <button type="button" className="danger-btn" onClick={handleClearFilter}>
+            Clear
+          </button>
+        </form>
+      </div>
 
       <div className="table-card">
         <h3>Recent Expenses</h3>
@@ -276,20 +315,20 @@ function handleClearFilter() {
                   <td>{expense.expenseDate}</td>
                   <td>
                     <td>
-  <button
-    className="secondary-btn"
-    onClick={() => handleEditExpense(expense)}
-  >
-    Edit
-  </button>
+                      <button
+                        className="secondary-btn"
+                        onClick={() => handleEditExpense(expense)}
+                      >
+                        Edit
+                      </button>
 
-  <button
-    className="danger-btn"
-    onClick={() => handleDeleteExpense(expense.id)}
-  >
-    Delete
-  </button>
-</td>
+                      <button
+                        className="danger-btn"
+                        onClick={() => handleDeleteExpense(expense.id)}
+                      >
+                        Delete
+                      </button>
+                    </td>
                   </td>
                 </tr>
               ))}

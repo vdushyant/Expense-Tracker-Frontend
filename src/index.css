@@ -257,3 +257,7 @@ body {
   border-radius: 8px;
   font-size: 15px;
 }
+
+.export-btn {
+  margin-bottom: 24px;
+}
