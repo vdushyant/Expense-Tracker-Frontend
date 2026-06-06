@@ -230,14 +230,31 @@ function Dashboard() {
 
   return (
     <div className="dashboard-container">
-      <h2>Dashboard</h2>
+      <div className="page-header">
+        <div>
+          <h2>Dashboard</h2>
+          <p>Track, manage, and analyze your daily expenses.</p>
+        </div>
+      </div>
 
       {message && <p className="success-message">{message}</p>}
       {error && <p className="error-message">{error}</p>}
 
-      <div className="summary-card">
-        <h3>Total Expense</h3>
-        <p>₹{summary}</p>
+      <div className="stats-grid">
+        <div className="summary-card">
+          <span className="summary-label">Total Expense</span>
+          <p>₹{summary}</p>
+        </div>
+
+        <div className="summary-card">
+          <span className="summary-label">Total Records</span>
+          <p>{pageInfo.totalElements}</p>
+        </div>
+
+        <div className="summary-card">
+          <span className="summary-label">Current Page</span>
+          <p>{pageInfo.pageNumber + 1}</p>
+        </div>
       </div>
 
       <button className="secondary-btn" onClick={handleExportCsv}>
