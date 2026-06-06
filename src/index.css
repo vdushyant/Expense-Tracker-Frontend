@@ -280,3 +280,64 @@ body {
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+@media (max-width: 900px) {
+  .expense-form {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .budget-form {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .navbar {
+    height: auto;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .navbar div {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .dashboard-container {
+    padding: 16px;
+  }
+
+  .auth-card,
+  .form-card,
+  .filter-card,
+  .table-card,
+  .summary-card {
+    padding: 18px;
+  }
+
+  .expense-form {
+    grid-template-columns: 1fr;
+  }
+
+  .budget-form {
+    grid-template-columns: 1fr;
+  }
+
+  .filter-form {
+    flex-direction: column;
+  }
+
+  .expense-table {
+    min-width: 700px;
+  }
+
+  .table-card {
+    overflow-x: auto;
+  }
+
+  .pagination {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
