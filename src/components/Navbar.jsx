@@ -12,13 +12,18 @@ function Navbar() {
 
   return (
     <nav className="navbar">
-      <h2>Expense Tracker</h2>
+      <Link to="/" className="navbar-logo">
+        ExpenseTracker
+      </Link>
 
-      <div>
+      <div className="navbar-links">
         {!isAuthenticated && (
           <>
+            <Link to="/">Home</Link>
             <Link to="/login">Login</Link>
-            <Link to="/register">Register</Link>
+            <Link to="/register" className="navbar-cta">
+              Get Started
+            </Link>
           </>
         )}
 
