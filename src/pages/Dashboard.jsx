@@ -3,6 +3,7 @@ import {
   createExpense,
   deleteExpense,
   getExpenses,
+  getExpensesByCategory,
   getTotalSummary,
   updateExpense,
 } from "../api/expenseApi";
@@ -13,6 +14,7 @@ function Dashboard() {
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const [editingExpenseId, setEditingExpenseId] = useState(null);
+  const [categoryFilter, setCategoryFilter] = useState("");
 
   const [expenseForm, setExpenseForm] = useState({
     description: "",
@@ -131,6 +133,35 @@ function Dashboard() {
       setError("");
     }
 
+    async function handleCategoryFilter(event) {
+  event.preventDefault();
+
+  if (!categoryFilter.trim()) {
+    fetchDashboardData();
+    return;
+  }
+
+  setMessage("");
+  setError("");
+
+  try {
+    const response = await getExpensesByCategory(categoryFilter.trim());
+    setExpenses(response.data || []);
+  } catch (err) {
+    console.error("Category filter error:", err);
+
+    const errorMessage =
+      err.response?.data?.message || "Failed to filter expenses by category.";
+
+    setError(errorMessage);
+  }
+}
+
+function handleClearFilter() {
+  setCategoryFilter("");
+  fetchDashboardData();
+}
+
   return (
     <div className="dashboard-container">
       <h2>Dashboard</h2>
@@ -195,6 +226,27 @@ function Dashboard() {
           </button>
         </form>
       </div>
+
+      <div className="filter-card">
+  <h3>Filter Expenses</h3>
+
+  <form onSubmit={handleCategoryFilter} className="filter-form">
+    <input
+      type="text"
+      value={categoryFilter}
+      onChange={(event) => setCategoryFilter(event.target.value)}
+      placeholder="Enter category, e.g. Food"
+    />
+
+    <button type="submit" className="secondary-btn">
+      Filter
+    </button>
+
+    <button type="button" className="danger-btn" onClick={handleClearFilter}>
+      Clear
+    </button>
+  </form>
+</div>
 
       <div className="table-card">
         <h3>Recent Expenses</h3>

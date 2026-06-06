@@ -34,3 +34,7 @@ export function getTotalSummary() {
 export function getMonthlySummary(month) {
   return api.get(`/expenses/summary/month/${month}`);
 }
+
+export function getExpensesByCategory(category) {
+  return api.get(`/expenses/category/${category}`);
+}
