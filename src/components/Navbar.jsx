@@ -1,14 +1,8 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 function Navbar() {
-  const { isAuthenticated, logout } = useAuth();
-  const navigate = useNavigate();
-
-  function handleLogout() {
-    logout();
-    navigate("/login");
-  }
+  const { isAuthenticated } = useAuth();
 
   return (
     <nav className="navbar">
@@ -31,9 +25,6 @@ function Navbar() {
           <>
             <Link to="/dashboard">Dashboard</Link>
             <Link to="/budget">Budget</Link>
-            <button className="logout-btn" onClick={handleLogout}>
-              Logout
-            </button>
           </>
         )}
       </div>

@@ -1,12 +1,14 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
+import Landing from "../pages/Landing";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import Dashboard from "../pages/Dashboard";
-import ProtectedRoute from "../components/ProtectedRoute";
 import Budget from "../pages/Budget";
+
+import ProtectedRoute from "../components/ProtectedRoute";
 import PublicRoute from "../components/PublicRoute";
-import Landing from "../pages/Landing";
+import AppLayout from "../components/AppLayout";
 
 function AppRoutes() {
   return (
@@ -32,22 +34,15 @@ function AppRoutes() {
       />
 
       <Route
-        path="/dashboard"
         element={
           <ProtectedRoute>
-            <Dashboard />
+            <AppLayout />
           </ProtectedRoute>
         }
-      />
-
-      <Route
-        path="/budget"
-        element={
-          <ProtectedRoute>
-            <Budget />
-          </ProtectedRoute>
-        }
-      />
+      >
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/budget" element={<Budget />} />
+      </Route>
     </Routes>
   );
 }
