@@ -6,11 +6,12 @@ import Dashboard from "../pages/Dashboard";
 import ProtectedRoute from "../components/ProtectedRoute";
 import Budget from "../pages/Budget";
 import PublicRoute from "../components/PublicRoute";
+import Landing from "../pages/Landing";
 
 function AppRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/login" />} />
+      <Route path="/" element={<Landing />} />
 
       <Route
         path="/login"
