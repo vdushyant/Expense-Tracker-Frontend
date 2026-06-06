@@ -25,6 +25,7 @@ function Navbar() {
         {isAuthenticated && (
           <>
             <Link to="/dashboard">Dashboard</Link>
+            <Link to="/budget">Budget</Link>
             <button className="logout-btn" onClick={handleLogout}>
               Logout
             </button>

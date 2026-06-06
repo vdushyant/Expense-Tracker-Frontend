@@ -261,3 +261,10 @@ body {
 .export-btn {
   margin-bottom: 24px;
 }
+
+.budget-form {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  align-items: end;
+}
