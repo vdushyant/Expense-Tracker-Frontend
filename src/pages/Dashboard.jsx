@@ -24,18 +24,37 @@ function Dashboard() {
     expenseDate: "",
   });
 
+  const [pageInfo, setPageInfo] = useState({
+    pageNumber: 0,
+    pageSize: 10,
+    totalElements: 0,
+    totalPages: 0,
+    last: true,
+  });
+
   useEffect(() => {
     fetchDashboardData();
   }, []);
 
-  async function fetchDashboardData() {
+  async function fetchDashboardData(page = 0) {
     setError("");
 
     try {
-      const expensesResponse = await getExpenses();
+      const expensesResponse = await getExpenses(page, pageInfo.pageSize);
       const summaryResponse = await getTotalSummary();
 
-      setExpenses(expensesResponse.data.content || []);
+      const expensesData = expensesResponse.data;
+
+      setExpenses(expensesData.content || []);
+
+      setPageInfo({
+        pageNumber: expensesData.pageNumber,
+        pageSize: expensesData.pageSize,
+        totalElements: expensesData.totalElements,
+        totalPages: expensesData.totalPages,
+        last: expensesData.last,
+      });
+
       setSummary(summaryResponse.data);
     } catch (err) {
       console.error("Dashboard error:", err);
@@ -197,6 +216,18 @@ function Dashboard() {
     }
   }
 
+  function handlePreviousPage() {
+    if (pageInfo.pageNumber > 0) {
+      fetchDashboardData(pageInfo.pageNumber - 1);
+    }
+  }
+
+  function handleNextPage() {
+    if (!pageInfo.last) {
+      fetchDashboardData(pageInfo.pageNumber + 1);
+    }
+  }
+
   return (
     <div className="dashboard-container">
       <h2>Dashboard</h2>
@@ -294,6 +325,29 @@ function Dashboard() {
           <p>No expenses found.</p>
         ) : (
           <table className="expense-table">
+            {expenses.length > 0 && (
+              <div className="pagination">
+                <button
+                  className="secondary-btn"
+                  onClick={handlePreviousPage}
+                  disabled={pageInfo.pageNumber === 0}
+                >
+                  Previous
+                </button>
+
+                <span>
+                  Page {pageInfo.pageNumber + 1} of {pageInfo.totalPages}
+                </span>
+
+                <button
+                  className="secondary-btn"
+                  onClick={handleNextPage}
+                  disabled={pageInfo.last}
+                >
+                  Next
+                </button>
+              </div>
+            )}
             <thead>
               <tr>
                 <th>ID</th>
