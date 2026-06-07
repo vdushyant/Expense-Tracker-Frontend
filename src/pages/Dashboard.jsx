@@ -115,7 +115,9 @@ function Dashboard() {
   }
 
   async function handleDeleteExpense(id) {
-    const confirmDelete = window.confirm("Are you sure you want to delete this expense?");
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this expense?"
+    );
 
     if (!confirmDelete) {
       return;
@@ -262,7 +264,16 @@ function Dashboard() {
       </button>
 
       <div className="form-card">
-        <h3>Add Expense</h3>
+        <div className="section-header">
+          <div>
+            <h3>{editingExpenseId ? "Update Expense" : "Add Expense"}</h3>
+            <p>
+              {editingExpenseId
+                ? "Modify the selected expense details."
+                : "Record a new expense with category and date."}
+            </p>
+          </div>
+        </div>
 
         <form onSubmit={handleExpenseSubmit} className="expense-form">
           <div className="form-group">
@@ -329,62 +340,73 @@ function Dashboard() {
             Filter
           </button>
 
-          <button type="button" className="danger-btn" onClick={handleClearFilter}>
+          <button
+            type="button"
+            className="danger-btn"
+            onClick={handleClearFilter}
+          >
             Clear
           </button>
         </form>
       </div>
 
       <div className="table-card">
-        <h3>Recent Expenses</h3>
+        <div className="section-header">
+          <div>
+            <h3>Recent Expenses</h3>
+            <p>View, edit, delete, and filter your expense records.</p>
+          </div>
+        </div>
 
         {expenses.length === 0 ? (
-          <p>No expenses found.</p>
+          <div className="empty-state">
+            <h4>No expenses found</h4>
+            <p>Add your first expense or clear the current filter.</p>
+          </div>
         ) : (
-          <table className="expense-table">
-            {expenses.length > 0 && (
-              <div className="pagination">
-                <button
-                  className="secondary-btn"
-                  onClick={handlePreviousPage}
-                  disabled={pageInfo.pageNumber === 0}
-                >
-                  Previous
-                </button>
+          <>
+            <div className="pagination">
+              <button
+                className="secondary-btn"
+                onClick={handlePreviousPage}
+                disabled={pageInfo.pageNumber === 0}
+              >
+                Previous
+              </button>
 
-                <span>
-                  Page {pageInfo.pageNumber + 1} of {pageInfo.totalPages}
-                </span>
+              <span>
+                Page {pageInfo.pageNumber + 1} of {pageInfo.totalPages}
+              </span>
 
-                <button
-                  className="secondary-btn"
-                  onClick={handleNextPage}
-                  disabled={pageInfo.last}
-                >
-                  Next
-                </button>
-              </div>
-            )}
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Description</th>
-                <th>Category</th>
-                <th>Amount</th>
-                <th>Date</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
+              <button
+                className="secondary-btn"
+                onClick={handleNextPage}
+                disabled={pageInfo.last}
+              >
+                Next
+              </button>
+            </div>
 
-            <tbody>
-              {expenses.map((expense) => (
-                <tr key={expense.id}>
-                  <td>{expense.id}</td>
-                  <td>{expense.description}</td>
-                  <td>{expense.category}</td>
-                  <td>₹{expense.amount}</td>
-                  <td>{expense.expenseDate}</td>
-                  <td>
+            <table className="expense-table">
+              <thead>
+                <tr>
+                  <th>NO</th>
+                  <th>Description</th>
+                  <th>Category</th>
+                  <th>Amount</th>
+                  <th>Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {expenses.map((expense, index) => (
+                  <tr key={expense.id}>
+                    <td>{pageInfo.pageNumber * pageInfo.pageSize + index + 1}</td>
+                    <td>{expense.description}</td>
+                    <td>{expense.category}</td>
+                    <td>₹{expense.amount}</td>
+                    <td>{expense.expenseDate}</td>
                     <td>
                       <button
                         className="secondary-btn"
@@ -400,11 +422,11 @@ function Dashboard() {
                         Delete
                       </button>
                     </td>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </>
         )}
       </div>
     </div>

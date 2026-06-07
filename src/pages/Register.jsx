@@ -24,7 +24,7 @@ function Register() {
     event.preventDefault();
 
     console.log("Register button clicked");
-    
+
     setMessage("");
     setError("");
 
@@ -50,9 +50,13 @@ function Register() {
   }
 
   return (
-    <div className="page-container">
+  <div className="auth-page">
+    <div className="auth-shell">
       <div className="auth-card">
         <h2>Create Account</h2>
+        <p className="auth-subtitle">
+          Start managing your expenses with a secure personal account.
+        </p>
 
         {message && <p className="success-message">{message}</p>}
         {error && <p className="error-message">{error}</p>}
@@ -66,6 +70,7 @@ function Register() {
               value={formData.name}
               onChange={handleChange}
               placeholder="Enter your name"
+              required
             />
           </div>
 
@@ -77,6 +82,7 @@ function Register() {
               value={formData.email}
               onChange={handleChange}
               placeholder="Enter your email"
+              required
             />
           </div>
 
@@ -88,6 +94,7 @@ function Register() {
               value={formData.password}
               onChange={handleChange}
               placeholder="Enter your password"
+              required
             />
           </div>
 
@@ -96,8 +103,38 @@ function Register() {
           </button>
         </form>
       </div>
+
+      <div className="auth-preview">
+        <p className="auth-preview-badge">Start tracking today</p>
+
+        <h1>Build better spending habits with every transaction.</h1>
+
+        <p>
+          Add expenses, filter by category, set monthly budgets, and get a clear
+          view of where your money goes.
+        </p>
+
+        <div className="auth-preview-card">
+          <div>
+            <span>Monthly Budget</span>
+            <strong>₹35,000</strong>
+          </div>
+
+          <div>
+            <span>Remaining</span>
+            <strong>₹10,500</strong>
+          </div>
+        </div>
+
+        <div className="auth-mini-list">
+          <span>✓ Personal expense history</span>
+          <span>✓ Budget status insights</span>
+          <span>✓ Responsive client-ready UI</span>
+        </div>
+      </div>
     </div>
-  );
+  </div>
+);
 }
 
 export default Register;
