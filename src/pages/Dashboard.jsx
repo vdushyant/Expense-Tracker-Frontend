@@ -237,6 +237,10 @@ function Dashboard() {
           <h2>Dashboard</h2>
           <p>Track, manage, and analyze your daily expenses.</p>
         </div>
+
+        <button className="header-action-btn" onClick={handleExportCsv}>
+          Export CSV
+        </button>
       </div>
 
       {message && <p className="success-message">{message}</p>}
@@ -258,10 +262,6 @@ function Dashboard() {
           <p>{pageInfo.pageNumber + 1}</p>
         </div>
       </div>
-
-      <button className="secondary-btn" onClick={handleExportCsv}>
-        Export CSV
-      </button>
 
       <div className="form-card">
         <div className="section-header">

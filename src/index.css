@@ -1183,3 +1183,31 @@ body {
     border-radius: 22px;
   }
 }
+
+.header-action-btn {
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 11px 18px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(16, 185, 129, 0.24);
+}
+
+.header-action-btn:hover {
+  background-color: var(--color-primary-dark);
+}
+
+@media (max-width: 600px) {
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .header-action-btn {
+    width: 100%;
+  }
+}
